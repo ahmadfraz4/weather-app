@@ -4,6 +4,9 @@ let madi = document.getElementById("madi");
 let img = "https://www.pngwing.com/en/search?q=sunny+Weather";
 let Weather = document.getElementById("W-img");
 let body = document.querySelector("body");
+let message = document.querySelector('.not-found')
+let city = document.getElementById('city')
+
 let time = new Date().getHours();
 
 if (time >= 18) {
@@ -19,7 +22,8 @@ const url = `https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=lahore
 
 async function onAppear(cityVal) {
   const Myurl = `https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=${cityVal}`;
-
+  message.classList.add('vanish')
+  city.innerText = cityVal
   fetch(Myurl, {
     method: "GET",
     body: JSON.stringify(),
@@ -112,7 +116,7 @@ myForm.addEventListener("submit", (e) => {
   e.preventDefault();
   val = cityName.value;
   cityName.value = "";
-  let city = document.getElementById("city");
+  // let city = document.getElementById("city");
   city.innerText = val;
   const url = `https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=${val}`;
   fetching(url);
@@ -129,6 +133,7 @@ myForm.addEventListener("submit", (e) => {
     try {
       const response = await fetch(url, options);
 	  loader.classList.remove('vanish') 
+    message.classList.add('vanish')
       const result = await response.json();
       const condition = document.getElementById("condition");
       const humidity = document.getElementById("humidity");
@@ -219,12 +224,12 @@ myForm.addEventListener("submit", (e) => {
   }
 });
 
- if('geolocation' in navigator){
+if('geolocation' in navigator){
     console.log(navigator.geolocation)
     navigator.geolocation.getCurrentPosition((position)=>{
       console.log(position.coords.latitude)
       console.log(position.coords.longitude)
       let u = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
-      let response = fetch(u).then(r=>{loader.classList.remove('vanish') ;return r.json()}).then(data =>{onAppear(data.address.city)}).catch(err=> console.log(err))
+      let response = fetch(u).then(r=>{loader.classList.remove('vanish') ;return r.json()}).then(data =>{onAppear(data.address.city)}).catch(err=>{console.log(err)})
     })
 }
